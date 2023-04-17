@@ -1,0 +1,190 @@
+{% extends 'base.html'  %}
+{% block header %} 
+{% block title %} Hodimlar {% endblock title %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-header"><h4><i class='fas fa-user-alt'></i> Hodimlar</h4></div>
+            <div class="card-body">
+            <table class="table hover">
+                <tr>
+                    <th>ID</th>
+                    <th>Ism Familya</th>
+                    <th>Manzil</th>
+                </tr>
+                {% for row in employees %}
+                <tr>
+                    <td>{{row.0}}</td>
+                    <td><a href="/calc_employee/{{row.0}}">{{row.1}}</a></td>
+                    <td>{{row.2}}</td>
+                </tr>
+                
+                {% endfor %}
+        
+            </table>    
+            </div>
+        </div>   
+    </div>
+
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header"><h4><i class='fas fa-chart-line'></i> Statistika</h4></div>
+            <div class="card-body">
+                <form method="post" action="/salary">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" style="width: 230px;"><i class="fas fa-user-alt"></i> Hodim</span>
+                      </div>
+                      <input type="hidden" name="id" value="{{data.0}}">
+                      <input type="text" class="form-control"  value="{{data.1}}" disabled="true" autocomplete="off" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 230px;"><i class="fas fa-calendar-check"></i> Ish boshladi</span>
+                        </div>
+                        <input type="date" class="form-control" id="start_day" value="{{data.4}}" disabled="true" autocomplete="off" required>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 230px;"><i class="fas fa-calendar-plus"></i> Bugun</span>
+                        </div>
+                        <input type="date" class="form-control" id="today"   value=""  disabled="true" autocomplete="off" required>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 230px;"><i class="far fa-calendar"></i> Ishga kelmagan kunari soni</span>
+                        </div>
+                        <input type="number" min="0" id="dead_days" onchange="DeadDays()" class="form-control" placeholder="0" value="0" autocomplete="off" required>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 230px;"><i class="fas fa-business-time"></i> Ishlagan kunari soni</span>
+                        </div>
+                        <input type="number" min="0"  id="live_days" class="form-control" placeholder="0" value="" disabled="true" autocomplete="off" required>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 230px;"><i class="fas fa-hand-holding-usd"></i> Kunlik ish haqqi</span>
+                        </div>
+                        <input type="number" min="0" id="daily_price" onchange="CalcPrice()" class="form-control" placeholder="0" value="0" autocomplete="off" required>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 230px;"><i class="fas fa-percentage"></i> Soliq</span>
+                        </div>
+                        <input type="number" min="0" id="comission" class="form-control" onchange="CalcPrice()" placeholder="0" value="0" autocomplete="off" required>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 230px;"><i class="fas fa-donate"></i> Belgilangan narx</span>
+                        </div>
+                        <input type="number" min="0" id="set_price" class="form-control" placeholder="0"  value="" disabled="true" autocomplete="off" required>
+                      </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fas fa-credit-card"></i>Karta</span>
+                        </div>
+                        <input type="text" class="form-control" maxlength="19" id="card_number" onchange="CheckCard()" oninput="CheckCard()" placeholder="8600 1234 5678 0068">
+                        <input type="text" class="form-control" maxlength="5" id="pull_date" oninput="CheckCard()" onchange="CheckCard()" placeholder="12/25">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-landmark"></i> Bank tranzit</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="12345 54321 234567">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-landmark"></i> Bank MFO</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="006547898">
+                    </div>         
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-donate"></i> Oylik maosh</span>
+                        </div>
+                        <input type="text"  id="total_price"  class="form-control"  value="0" disabled>
+                        <input type="hidden" id="total_price1" name="price" value="">
+                    </div>        
+                    <button type="submit" class="btn btn-success">To'lov</button>
+                  </form>
+            </div>
+        </div> 
+    </div>
+</div>        
+<script>
+    function Today() {
+        var dt=new Date(),m,d,y;
+        var td=document.getElementById('today');
+        y=dt.getFullYear();
+        m=dt.getMonth()+1;
+        if (m<10) m="0"+m;
+        if (d<10) d="0"+d;
+        d=dt.getDate();
+        td.value=y+"-"+m+"-"+d;
+    }
+    Today()
+    function DateDiff(day1,day2) {
+        if (day1>day2) {
+            res=(day1-day2)/(1000*3600*24);
+        } else {
+            res=(day2-day1)/(1000*3600*24);
+        }
+        return parseInt(res)
+    }
+    function toDate(str) {
+        arr=str.split('-');
+        now=new Date();
+        now=now.setFullYear(arr[0],arr[1],arr[2]);
+        return now;
+    }
+
+    
+    function CalcPrice() {
+        var set_price=document.getElementById('set_price');
+        var daily_price=document.getElementById('daily_price').value;
+        var comission=document.getElementById('comission').value;
+        var total_price=document.getElementById('total_price');
+        var total_price1=document.getElementById('total_price1');
+        var live_days=document.getElementById('live_days').value;
+        set_price.value=live_days*daily_price;
+        total_price.value=set_price.value-set_price.value*comission/100;
+        total_price1.value=total_price.value;
+    }
+    function DeadDays() {
+        var start_day=document.getElementById('start_day').value;
+        var today=document.getElementById('today').value;
+        var live_days=document.getElementById('live_days');
+        var dead_days=document.getElementById('dead_days').value;
+        day1=toDate(start_day);
+        day2=toDate(today);
+        res=DateDiff(day1,day2);
+        res=res-parseInt(dead_days);
+        if (res<0) res=0;
+        live_days.value=res;
+        CalcPrice();
+        
+    } DeadDays();
+    function CheckCard() {
+        var card_number=document.getElementById('card_number');
+        var pull_date=document.getElementById('pull_date');
+        var tmp_pull="";
+        tmp_pull=pull_date.value;
+        if (tmp_pull.length==2) tmp_pull+="/";
+        pull_date.value=tmp_pull;
+        switch(card_number.value.length) {
+            case 4: { card_number.value+=" "; break; }
+            case 9: { card_number.value+=" "; break; }
+            case 14: { card_number.value+=" "; break; }
+        } 
+    }
+
+</script>
+
+{% endblock content %}
+
+</body>
+</html>
