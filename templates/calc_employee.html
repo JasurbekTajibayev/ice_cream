@@ -121,9 +121,9 @@
         var td=document.getElementById('today');
         y=dt.getFullYear();
         m=dt.getMonth()+1;
+        d=dt.getDate();
         if (m<10) m="0"+m;
         if (d<10) d="0"+d;
-        d=dt.getDate();
         td.value=y+"-"+m+"-"+d;
     }
     Today()
